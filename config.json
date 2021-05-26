@@ -1,0 +1,9 @@
+{
+  "apiUrl" : "https://chinahobbyline.com/api/CartApi/SelectInvbyWareHourse",
+  "articles" : [
+    {
+      "vSkuCode" : 398,
+      "vHourseCode" : "EU"
+    }
+  ]
+}
