@@ -10,7 +10,7 @@ async function getConfig(configPath: string): Promise<Config> {
             if(err) {
                 reject(err);
             } else {
-                return JSON.parse(data);
+                resolve(JSON.parse(data));
             }
         });
 
@@ -59,3 +59,4 @@ getConfig('./config.json')
                 });
         });
     });
+

@@ -1,9 +1,16 @@
 {
-  "apiUrl" : "https://chinahobbyline.com/api/CartApi/SelectInvbyWareHourse",
+  "apiHostname" : "chinahobbyline.com",
+  "apiPath" : "/api/CartApi/SelectInvbyWareHourse",
   "articles" : [
     {
       "vSkuCode" : 398,
-      "vHourseCode" : "EU"
+      "vHourseCode" : "EU",
+      "prettyName" : "4 Packs CNHL Black Series 1300mAh 22.2V 6S 100C Lipo Battery"
+    },
+    {
+      "vSkuCode" : 284,
+      "vHourseCode" : "EU",
+      "prettyName" : "CNHL Black Series 1300mAh 22.2V 6S 100C Lipo Battery"
     }
   ]
 }
