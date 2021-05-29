@@ -105,3 +105,6 @@ dist
 
 # Web storm files
 .idea
+
+# Database file
+*.db

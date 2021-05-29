@@ -1,14 +1,30 @@
 import { Telegraf, Context } from 'telegraf';
 import {getConfig, getCurrentStock, getStockOfAll} from './stock.service';
+import {StorageService} from "./storage.service";
 
 const CONFIG_PATH = './config.json';
 
 // Keep a list of all subscribers
-const stockUpdateSubscribers: Context[] = [];
+let stockUpdateSubscribers: number[] = [];
+
+// Keep the current bot instance
+let bot: Telegraf;
+
+// Storage service
+const storageService = new StorageService();
 
 export function startBot() {
 	const bot_token = '1863496414:AAFAUwjG10YglqUIIETrWyjcGMqOiFdyFlY';
-	const bot = new Telegraf(bot_token);
+	bot = new Telegraf(bot_token);
+
+	// Initialize the storage service and restore the subscriber list from there
+	storageService.init()
+		.then(() =>
+			restoreSubscriberList()
+				.then(() =>
+					notifySubscribers('The bot has been restarted, and your subscription will continue')
+				)
+		);
 
 	bot.command('hello', ctx => ctx.reply('Hey friend!'));
 
@@ -27,16 +43,26 @@ export function startBot() {
 	bot.launch();
 
 	// Enable graceful stop
-	const PROCESS_TERMINATION_MESSAGE = 'The bot process was terminated. If you want to continue to receive updates, please resubscribe as soon as the bot is restarted';
-	process.once('SIGINT', () => {
-		notifySubscribers(PROCESS_TERMINATION_MESSAGE)
-			.then(() => bot.stop('SIGINT'));
-	})
-	process.once('SIGTERM', () => {
-		notifySubscribers(PROCESS_TERMINATION_MESSAGE)
-			.then(() => bot.stop('SIGTERM'));
-	});
+	process.once('SIGINT', () => stopBot('SIGINT'));
+	process.once('SIGTERM', () => stopBot('SIGTERM'));
 }
+
+/**
+ * Save the subscriber list before exiting the bot
+ * @param reason
+ */
+function stopBot(reason: string) {
+	const PROCESS_TERMINATION_MESSAGE = 'The bot process was terminated. Go write an angry message to Nico :D';
+	saveSubscribersToStorage()
+		.then(() =>
+			notifySubscribers(PROCESS_TERMINATION_MESSAGE)
+				.then(() => {
+					bot.stop(reason);
+					process.exit(0);
+				})
+		)
+}
+
 
 /**
  * List all items that are currently listed in the config (including their vSkuCode)
@@ -72,11 +98,11 @@ function list(ctx: Context) {
 function subscribeToStockNotifications(ctx: Context) {
 	// Check if the current chat is already registered
 	// Im just assuming chat id is unique here
-	if (stockUpdateSubscribers.some((context) => context.chat!.id === ctx.chat!.id)) {
+	if (stockUpdateSubscribers.includes(ctx.chat!.id)) {
 		ctx.reply('It seems this chat is already registered for notifications. Use /unsubscribe if you dont want to receive notifications any more.')
 		return;
 	}
-	stockUpdateSubscribers.push(ctx);
+	stockUpdateSubscribers.push(ctx.chat!.id);
 	ctx.reply('You are now successfully registered for stock notifications. Use /unsubscribe if you dont want to receive notifications any more.')
 }
 
@@ -86,7 +112,7 @@ function subscribeToStockNotifications(ctx: Context) {
  */
 function unsubscribeFromStockNotifications(ctx: Context) {
 	// Find if the cat id is in the subscriber list
-	const index = stockUpdateSubscribers.findIndex(context => context.chat!.id === ctx.chat!.id);
+	const index = stockUpdateSubscribers.findIndex((chatId) => ctx.chat!.id === chatId);
 
 	if (index === -1) {
 		ctx.reply('It does not seem like you were subscribed :/');
@@ -104,7 +130,16 @@ function unsubscribeFromStockNotifications(ctx: Context) {
  * @param message Message to send
  */
 export async function notifySubscribers(message: string): Promise<void> {
-	for (const context of stockUpdateSubscribers) {
-		await context.reply(message);
+	for (const chat of stockUpdateSubscribers) {
+		await bot.telegram.sendMessage(chat, message);
 	}
+}
+
+
+async function restoreSubscriberList() {
+	stockUpdateSubscribers = await storageService.getValue('stock_service_subscribers') ?? [];
+}
+
+async function saveSubscribersToStorage() {
+	await storageService.setValue('stock_service_subscribers', stockUpdateSubscribers);
 }

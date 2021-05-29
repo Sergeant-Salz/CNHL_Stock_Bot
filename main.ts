@@ -14,7 +14,7 @@ getConfig('config.json')
                 .then(products => {
                     for (const product of products) {
 
-                        if (product.stock ?? 0 > (product.threshold ?? 0)) {
+                        if ((product.stock ?? 0) > (product.threshold ?? 0)) {
                             // Notify all subscribers that the given item is back in stock
                             const productPageLink = config.productPageUrl + product.vSkuCode;
                             notifySubscribers(`Hey, one of your items seems to be back in stock:\n${
