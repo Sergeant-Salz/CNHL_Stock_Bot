@@ -1,16 +1,21 @@
 {
-  "apiHostname" : "chinahobbyline.com",
-  "apiPath" : "/api/CartApi/SelectInvbyWareHourse",
-  "articles" : [
+  "apiHostname": "chinahobbyline.com",
+  "apiPath": "/api/CartApi/SelectInvbyWareHourse",
+  "articles": [
     {
-      "vSkuCode" : 398,
-      "vHourseCode" : "EU",
-      "prettyName" : "4 Packs CNHL Black Series 1300mAh 22.2V 6S 100C Lipo Battery"
+      "vSkuCode": 398,
+      "vHourseCode": "EU",
+      "prettyName": "[Combo] 4 Packs CNHL Black Series 1300mAh 22.2V 6S 100C Lipo Battery"
     },
     {
-      "vSkuCode" : 284,
-      "vHourseCode" : "EU",
-      "prettyName" : "CNHL Black Series 1300mAh 22.2V 6S 100C Lipo Battery"
+      "vSkuCode": 284,
+      "vHourseCode": "EU",
+      "prettyName": "CNHL Black Series 1300mAh 22.2V 6S 100C Lipo Battery For FPV With XT60 Plug"
+    },
+    {
+      "vSkuCode": 299,
+      "vHourseCode": "EU",
+      "prettyName": "[EU PRE-ORDER][Combo] 4 Packs CNHL Black Series 1300mAh 22.2V 6S 100C Lipo Battery"
     }
   ]
 }
