@@ -9,5 +9,7 @@ export class Product {
 export class Config {
     apiHostname: string;
     apiPath: string;
+    productPageUrl: string;
+    pollingInterval: number;
     articles: Product[];
 }

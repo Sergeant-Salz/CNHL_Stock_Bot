@@ -65,6 +65,10 @@ function list(ctx: Context) {
 		})
 }
 
+/**
+ * Add a given chat to the subscriber list, if not on it already
+ * @param ctx
+ */
 function subscribeToStockNotifications(ctx: Context) {
 	// Check if the current chat is already registered
 	// Im just assuming chat id is unique here
@@ -76,6 +80,10 @@ function subscribeToStockNotifications(ctx: Context) {
 	ctx.reply('You are now successfully registered for stock notifications. Use /unsubscribe if you dont want to receive notifications any more.')
 }
 
+/**
+ * Remove a given chat from the subscriber list if it was present
+ * @param ctx
+ */
 function unsubscribeFromStockNotifications(ctx: Context) {
 	// Find if the cat id is in the subscriber list
 	const index = stockUpdateSubscribers.findIndex(context => context.chat!.id === ctx.chat!.id);
@@ -95,7 +103,7 @@ function unsubscribeFromStockNotifications(ctx: Context) {
  * Send a given message to all subscribers
  * @param message Message to send
  */
-async function notifySubscribers(message: string): Promise<void> {
+export async function notifySubscribers(message: string): Promise<void> {
 	for (const context of stockUpdateSubscribers) {
 		await context.reply(message);
 	}
