@@ -50,15 +50,5 @@ export async function getCurrentStock(host: string, path: string, product: Produ
     });
 }
 
-// Yes I know this is probably ugly af but Im no js expert
-// getConfig('./config.json')
-//     .then((config) => {
-//         config.articles.forEach((product) => {
-//             getCurrentStock(config.apiHostname, config.apiPath, product)
-//                 .then(stock => {
-//                     console.log(`There are ${stock} items of ${product.prettyName || product.vSkuCode} currently in stock!`);
-//                 });
-//         });
-//     });
 
 startBot();
