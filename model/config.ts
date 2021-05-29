@@ -3,6 +3,7 @@ export class Product {
     vHourseCode: string;
     prettyName?: string;
     threshold?: number;
+    stock?: number;
 }
 
 export class Config {
