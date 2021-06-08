@@ -14,33 +14,36 @@ let bot: Telegraf;
 const storageService = new StorageService();
 
 export function startBot() {
-	const bot_token = '1863496414:AAFAUwjG10YglqUIIETrWyjcGMqOiFdyFlY';
-	bot = new Telegraf(bot_token);
+	getConfig(CONFIG_PATH)
+		.then((config) => {
+			bot = new Telegraf(config.botToken);
 
-	// Initialize the storage service and restore the subscriber list from there
-	storageService.init()
-		.then(() =>
-			restoreSubscriberList()
+			// Initialize the storage service and restore the subscriber list from there
+			storageService.init()
 				.then(() =>
-					notifySubscribers('The bot has been restarted, and your subscription will continue')
-				)
-		);
+					restoreSubscriberList()
+						.then(() =>
+							notifySubscribers('The bot has been restarted, and your subscription will continue')
+						)
+				);
 
-	bot.command('hello', ctx => ctx.reply('Hey friend!'));
+			bot.command('hello', ctx => ctx.reply('Hey friend!'));
 
-	// manually list the stock of each item
-	bot.command('list', ctx => list(ctx));
+			// manually list the stock of each item
+			bot.command('list', ctx => list(ctx));
 
-	// Command to list all items that are currently being watched
-	bot.command('watched', ctx => listWatchedItems(ctx))
+			// Command to list all items that are currently being watched
+			bot.command('watched', ctx => listWatchedItems(ctx))
 
-	// Command to subscribe to notifications
-	bot.command('subscribe', ctx => subscribeToStockNotifications(ctx));
+			// Command to subscribe to notifications
+			bot.command('subscribe', ctx => subscribeToStockNotifications(ctx));
 
-	// Command to subscribe to notifications
-	bot.command('unsubscribe', ctx => unsubscribeFromStockNotifications(ctx));
+			// Command to subscribe to notifications
+			bot.command('unsubscribe', ctx => unsubscribeFromStockNotifications(ctx));
 
-	bot.launch();
+			bot.launch();
+
+		});
 
 	// Enable graceful stop
 	process.once('SIGINT', () => stopBot('SIGINT'));

@@ -7,6 +7,7 @@ export class Product {
 }
 
 export class Config {
+    botToken: string;
     apiHostname: string;
     apiPath: string;
     productPageUrl: string;
